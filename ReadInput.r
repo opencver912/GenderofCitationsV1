@@ -51,15 +51,30 @@ genderDB <- findGivenNames(author_list, progress = FALSE);
 #extracting the gender of the authors  library("gender ")
 # k=list()
 # firstnamelist=  lapply(  author_list[1:10] ,function(x){strsplit(as.character(x), " ")})
-firstnamelist=strsplit(as.character(author_list[1:10])," ",fixed=TRUE)
+firstnamelist=strsplit(as.character(author_list)," ",fixed=TRUE)
 finalfirstnamelist=as.character(lapply(firstnamelist,FUN=function(x){ as.character(x[[1]])}))
 rm(firstnamelist);
+#remove duplications from firstnamelist
+finalfirstnamelist=unique(finalfirstnamelist);
+
 genderDB2 = gender(finalfirstnamelist,
                    method = c("ssa", "ipums", "napp","kantrowitz", "genderize", "demo"),
                    years = c(1900, 2012), countries = c("United States", "Canada","United Kingdom", "Germany", "Iceland", "Norway", "Sweden"))
  
 
-print(gederDB2); 
+print(gederDB2);
+
+male=length(which(genderDB2$gender=="male"));
+female=length(which(genderDB2$gender=="female"))
+data=data.frame(group=c("male ","female ") , value=c(male,female) )
+ggplot(data, aes(x = group, y = value ,fill = group )) + 
+  geom_bar(width = 0.85, stat="identity")
+
+hist(genderDB2$name[which(genderDB2$gender=="male")], breaks=12, col="red")
+
+plot(genderDB2$name[which(genderDB2$gender=="male")],  
+                    genderDB2$name[which(genderDB2$gender=="female")], 
+                    main="Scatterplot Example", xlab="male ", ylab="female");
 # for (i in 1:13){k=append(k , text[i])}
 # y=strsplit(as.character(k)," ",fixed=TRUE)
 # 
