@@ -61,7 +61,7 @@ write.table(mat, file="MyDataOriginal.csv", na="")
 n.obs <- sapply(working_list2, length)
 seq.max <- seq_len(max(n.obs))
 mat2 <- t(sapply(working_list2, "[", i = seq.max))
-write.table(mat2, file="MyDataOriginal.csv", na="")
+write.table(mat2, file="working_list2.csv", na="")
 
 
 json_data_frame=ldply (working_list2, data.frame)
