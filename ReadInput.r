@@ -13,6 +13,50 @@ library("ggplot2")
 library("dplyr")
 library(gdata) # for the trim function
 library("plyr")
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+manipulatjsoninmongo=function(){
+  mongodb <- mongoDbConnect("db1")
+  dbShowCollections(mongodb)
+  results <- dbGetQuery(mongodb, "col1", "{}", 0, 2)
+  names(results)
+}
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#Export Json to RDB
+ExportJsonToRDB=function(){
+  
+  result=fromJSON(file = "ollion_200160601_2_correc.json")
+  
+  for(i in 1:as.numeric(length(result))){
+    #for authors
+    tmp=result[[i]][["authors"]];
+    # unlist(result[i]);
+    author=as.character(tmp);
+    author=stri_trim(author, side = c("both"));
+    if(!is.null(author)){
+      if(! (length(author) == 0L)){
+        if(stri_length(author)>=1){
+          if(!(is.element(author , author_list)))
+          {author_list=append(author_list,author) }}} }
+    
+    #for journal
+    tmp=result[[i]][["journal"]];
+    # unlist(result[i]);
+    topic=as.character(tmp);
+    topic=stri_trim(topic, side = c("both"));
+    if(!is.null(topic)){ 
+      if(! (length(topic) == 0L)){ 
+        if(stri_length(topic)>=1){ 
+          if(!(is.element(topic , topic_list))) 
+          {topic_list=append(topic_list,topic)}}} }
+    
+  }  
+  
+}
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 retrievegender <-function(){
 result <- fromJSON(file = "ollion_200160601_2_correc.json")
 # json_data_frame <- as.data.frame(result);
@@ -61,8 +105,10 @@ write.table(mat, file="MyDataOriginal.csv", na="")
 n.obs <- sapply(working_list2, length)
 seq.max <- seq_len(max(n.obs))
 mat2 <- t(sapply(working_list2, "[", i = seq.max))
-write.table(mat2, file="working_list2.csv", na="")
+write.table(mat2, file="working_list3.csv", na="nil",sep=";")
+write.csv(mat2, file="working_list4.csv")
 
+save(mat2, file="matrix.RData");
 
 json_data_frame=ldply (working_list2, data.frame)
 json_data_frame= data.frame(matrix(unlist(working_list2), ncol = 10))
